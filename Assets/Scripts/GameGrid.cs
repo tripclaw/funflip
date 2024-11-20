@@ -1,49 +1,42 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameGrid : MonoBehaviour
+[Serializable]
+public struct GameGrid
 {
-    public int[,] grid;
-    Vector2Int gridSize = new Vector2Int(5, 5);
+    private int[,] grid;
+
     void Start()
     {
-        RandomizeGrid();
+        RandomizeGrid(32);
     }
 
-    private void Init()
+    public GameGrid(int sizeX, int sizeY)
     {
-        grid = new int[gridSize.x, gridSize.y];
+        this.grid = new int[sizeX, sizeY];
     }
 
-    private void RandomizeGrid()
+
+    private void RandomizeGrid(int numberOfCards)
     {
 
-        for (int y = gridSize.y - 1; y >= 0; y--)
+        int sizeX = grid.GetLength(0);
+        int sizeY = grid.GetLength(1);
+
+        for (int y = sizeY - 1; y >= 0; y--)
         {
-            for (int x = 0; x < gridSize.x; x++)
+            for (int x = 0; x < sizeX; x++)
             {
-                grid[x, y] = Random.Range(0, 9);
+                grid[x, y] = UnityEngine.Random.Range(0, 9);
             }
         }
     }
 
-    private void Update()
+    public int[,] GetGameGrid()
     {
-        if (Input.GetKey(KeyCode.Space))
-            PrintGrid();
-    }
-    void PrintGrid()
-    {
-        string txt = string.Empty;
-
-        for (int y = gridSize.y - 1; y >= 0; y--)
-        {
-            for (int x = 0; x < gridSize.x; x++)
-            {
-                txt += grid[x, y].ToString();
-            }
-        }
+        return grid;
     }
 
 }

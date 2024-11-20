@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02d846a3623dbd24284003bed97eb84d, type: 3}
+  m_Name: Retro Game Controller
+  m_EditorClassIdentifier: 
+  cardFaceSprite: {fileID: 21300000, guid: d7a86ea2590b1bd4fa857719a18a44c3, type: 3}
+  bgColor: {r: 0.46274507, g: 0.9764706, b: 0.7766266, a: 1}
