@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 public class CardVisual : MonoBehaviour
 {
@@ -17,6 +18,9 @@ public class CardVisual : MonoBehaviour
 
     private Card parentCard;
     private Transform cardTransform;
+
+    [System.NonSerialized] public UnityEvent<bool> cardFlipCompleteEvent = new UnityEvent<bool>();
+
 
     [Header("Flip Animation")]
     [SerializeField] float flipDuration = 0.7f;
@@ -100,6 +104,8 @@ public class CardVisual : MonoBehaviour
         transform.eulerAngles = new Vector3(transform.eulerAngles.x, endRotation, transform.eulerAngles.z);
 
         isAnimating = false;
+
+        cardFlipCompleteEvent.Invoke(isFlipped);
 
     }
 

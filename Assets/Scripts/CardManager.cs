@@ -14,8 +14,9 @@ public class CardManager : MonoBehaviour
     public CardSet cardSet;
 
     List<CardData> availableCards = new List<CardData>();
+    List<Card> currentCards = new List<Card>();
+    List<Card> selectedCards = new List<Card>();
 
-    
     public void Awake()
     {
         ResetCardSet();
@@ -34,11 +35,22 @@ public class CardManager : MonoBehaviour
             {
                 Card card = Instantiate(cardPrefab, layoutCards.transform).GetComponent<Card>();
                 card.Initialize(cardData);
+                currentCards.Add(card);
+                card.cardRevealedEvent.AddListener(OnCardFlipped);
             }
         }
-        layoutCards.itemCountX = layoutSizeX;
-        layoutCards.itemCountY = layoutSizeY;
+        layoutCards.SetDimensions(layoutSizeX, layoutSizeY);
         ShuffleCards();
+    }
+    public void DestroyCards()
+    {
+        selectedCards.Clear();
+
+        foreach (Card card in currentCards)
+        {
+            card.cardRevealedEvent.RemoveListener(OnCardFlipped);
+            Destroy(card.gameObject);
+        }
     }
 
     void ShuffleCards()
@@ -66,12 +78,30 @@ public class CardManager : MonoBehaviour
         return cardDataCopy;
     }
 
-    public void DestroyCards()
+    void OnCardFlipped(Card card)
     {
-        foreach (Transform child in layoutCards.transform)
+        selectedCards.Add(card);
+        if (selectedCards.Count == 2)
         {
-            Destroy(child.gameObject);
+            CheckCardsForMatch(selectedCards[0], selectedCards[1]);
+                
+            selectedCards.Clear();
         }
     }
 
+    void CheckCardsForMatch(Card card1, Card card2)
+    {
+        if (card1.cardData.name == card2.cardData.name)
+        {
+            // Match!
+
+        }
+        else
+        {
+            // Not a match
+            card1.SetFlipped(false);
+            card2.SetFlipped(false);
+        }
+
+    }
 }

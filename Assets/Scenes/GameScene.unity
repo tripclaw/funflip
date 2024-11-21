@@ -451,8 +451,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ab94063bf37bfb4cb71abdef3fba78c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemCountX: 6
-  itemCountY: 4
 --- !u!114 &904547031
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -473,10 +471,10 @@ MonoBehaviour:
   m_ChildAlignment: 4
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 287.99997, y: 287.99997}
+  m_CellSize: {x: 895.99994, y: 895.99994}
   m_Spacing: {x: 16, y: 16}
   m_Constraint: 1
-  m_ConstraintCount: 6
+  m_ConstraintCount: 3
 --- !u!1 &1085458300
 GameObject:
   m_ObjectHideFlags: 0

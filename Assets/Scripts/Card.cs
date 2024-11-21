@@ -16,6 +16,8 @@ public class Card : MonoBehaviour, IPointerDownHandler
 
     private bool isFlipped = false;
 
+    [System.NonSerialized] public UnityEvent<Card> cardRevealedEvent = new UnityEvent<Card>();
+
     private void Awake()
     {
         canvas = GetComponentInParent<Canvas>();
@@ -32,7 +34,7 @@ public class Card : MonoBehaviour, IPointerDownHandler
         cardVisual = Instantiate(cardVisualPrefab, transform).GetComponent<CardVisual>();
 
         cardVisual.Initialize(this);
-        
+        cardVisual.cardFlipCompleteEvent.AddListener(OnCardFlipComplete);
     }
 
     // Update is called once per frame
@@ -41,15 +43,30 @@ public class Card : MonoBehaviour, IPointerDownHandler
         
     }
 
+    public void SetFlipped(bool state)
+    {
+        if (!isFlipped)
+            isFlipped = state; // Set state immediately when flipping
+        
+        cardVisual.SetIsFlipped(state, true);
+    }
+
     public void OnPointerDown(PointerEventData eventData)
     {
         if (isFlipped)
             return;
-        
-        isFlipped = true;
-        cardVisual.SetIsFlipped(true, true);
+
+        SetFlipped(true);
+    }
 
 
+    void OnCardFlipComplete(bool state)
+    {
+
+        if (state)
+            cardRevealedEvent.Invoke(this);
+        else
+            isFlipped = false; // Set state after flip is complete
     }
 
 
