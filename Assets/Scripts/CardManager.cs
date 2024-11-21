@@ -8,6 +8,7 @@ public class CardManager : MonoBehaviour
 {
 
     public LayoutCards layoutCards;
+    public PlayerScore playerScore;
 
     public Card cardPrefab;
 
@@ -19,12 +20,12 @@ public class CardManager : MonoBehaviour
 
     public void Awake()
     {
-        
+
     }
 
     public void CreateCards(int layoutSizeX, int layoutSizeY)
     {
-        Debug.Log("Create cards " + layoutSizeX + " x " + layoutSizeY);
+        Debug.Log("Creating card layout " + layoutSizeX + " x " + layoutSizeY);
 
         if (currentCards.Count > 0)
             DestroyCards();
@@ -100,7 +101,7 @@ public class CardManager : MonoBehaviour
         if (card1.cardData.name == card2.cardData.name)
         {
             // Match!
-
+            playerScore.AddScore(100);
         }
         else
         {

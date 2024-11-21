@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] LevelSelectionManager levelSelectionManager;
 
+    [SerializeField] PlayerScore playerScore;
 
     // Start is called before the first frame update
     void Start()
@@ -37,10 +38,9 @@ public class GameManager : MonoBehaviour
 
     void CreateGame(int sizeX, int sizeY)
     {
-        // Init Player
+        // Init Game Config / (To Do) Restore Save Game 
+        playerScore.Reset();
 
-        // Init Game Config / Restore Save Game
-        
         // Init UI
         cardManager.CreateCards(sizeX, sizeY);
 
