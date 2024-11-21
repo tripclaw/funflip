@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.Progress;
+using UnityEngine.Events;
 
 public class CardManager : MonoBehaviour
 {
@@ -18,6 +18,12 @@ public class CardManager : MonoBehaviour
     List<Card> currentCards = new List<Card>();
     List<Card> selectedCards = new List<Card>();
 
+    int matchesNeeded = 1;
+    int matchesMade = 0;
+
+    [HideInInspector]
+    public UnityEvent onGameWinEvent = new UnityEvent();
+
     public void Awake()
     {
 
@@ -31,6 +37,7 @@ public class CardManager : MonoBehaviour
             DestroyCards();
 
         ResetCardSet();
+        matchesNeeded = 0;
 
         int cardCount = (layoutSizeX * layoutSizeY) / 2;
         for (int i = 0; i < cardCount; i++)
@@ -44,9 +51,11 @@ public class CardManager : MonoBehaviour
                 currentCards.Add(card);
                 card.cardRevealedEvent.AddListener(OnCardFlipped);
             }
+            matchesNeeded++;
         }
         layoutCards.SetDimensions(layoutSizeX, layoutSizeY);
         ShuffleCards();
+        matchesMade = 0;
     }
     public void DestroyCards()
     {
@@ -102,6 +111,12 @@ public class CardManager : MonoBehaviour
         {
             // Match!
             playerScore.AddScore(100);
+            matchesMade++;
+            if (matchesMade >= matchesNeeded)
+            {
+                // Win State
+                GameWin();
+            }
         }
         else
         {
@@ -110,5 +125,11 @@ public class CardManager : MonoBehaviour
             card2.SetFlipped(false);
         }
 
+
+    }
+
+    void GameWin()
+    {
+        onGameWinEvent.Invoke();
     }
 }

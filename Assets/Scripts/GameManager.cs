@@ -10,10 +10,14 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] PlayerScore playerScore;
 
+    [SerializeField] GameObject levelComplete;
+
+
     // Start is called before the first frame update
     void Start()
     {
         levelSelectionManager.LoadPreviousGameState();
+        cardManager.onGameWinEvent.AddListener(OnGameWin);
     }
 
     // Update is called once per frame
@@ -42,6 +46,8 @@ public class GameManager : MonoBehaviour
         playerScore.Reset();
 
         // Init UI
+        levelComplete.SetActive(false);
+
         cardManager.CreateCards(sizeX, sizeY);
 
         // Start Game
@@ -53,4 +59,9 @@ public class GameManager : MonoBehaviour
         CreateGame(sizeX, sizeY);
     }
 
+
+    public void OnGameWin()
+    {
+        levelComplete.SetActive(true);
+    }
 }
