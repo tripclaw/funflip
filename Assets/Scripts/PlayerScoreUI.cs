@@ -17,6 +17,8 @@ public class PlayerScoreUI : MonoBehaviour
     float maxCountUpTime = 1.5f;
 
     [SerializeField] Text addedPointsText;
+    [SerializeField] Text comboLevelText;
+
 
     public bool isCounting { get; private set; }
 
@@ -78,6 +80,16 @@ public class PlayerScoreUI : MonoBehaviour
             addedPointsText.text = "";
         }
 
+        if (playerScore.lastComboLevel > 1)
+        {
+            comboLevelText.text = "X" + playerScore.lastComboLevel.ToString();
+            comboLevelText.transform.localScale = new Vector3(1.15f, 1.15f, 1.15f);
+        }
+        else
+        {
+            comboLevelText.text = "";
+        }
+
     }
 
     IEnumerator CountUpScore(float scoreCountDuration)
@@ -93,6 +105,7 @@ public class PlayerScoreUI : MonoBehaviour
             currentDisplayScore = (int)Mathf.Lerp(startingScore, targetDisplayScore, t / scoreCountDuration);
 
             addedPointsText.transform.localScale = Vector3.Lerp(addedPointsText.transform.localScale, Vector3.one, t / (scoreCountDuration * 0.6f));
+            comboLevelText.transform.localScale = Vector3.Lerp(comboLevelText.transform.localScale, Vector3.one, t / (scoreCountDuration * 0.6f));
 
             SetText();
             yield return null;
@@ -101,7 +114,10 @@ public class PlayerScoreUI : MonoBehaviour
         isCounting = false;
         currentDisplayScore = targetDisplayScore;
         SetText();
-        addedPointsText.text = "";
+        addedPointsText.transform.localScale = Vector3.one;
+        comboLevelText.transform.localScale = Vector3.one;
+        addedPointsText.text = ""; 
+        comboLevelText.text = "";
 
         yield return null;
     }

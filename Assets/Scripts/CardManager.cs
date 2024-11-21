@@ -19,7 +19,9 @@ public class CardManager : MonoBehaviour
     List<Card> selectedCards = new List<Card>();
 
     int matchesNeeded = 1;
-    int matchesMade = 0;
+    int totalMatchesMade = 0;
+    
+    int comboLevel = 0;
 
     [HideInInspector]
     public UnityEvent onGameWinEvent = new UnityEvent();
@@ -55,7 +57,7 @@ public class CardManager : MonoBehaviour
         }
         layoutCards.SetDimensions(layoutSizeX, layoutSizeY);
         ShuffleCards();
-        matchesMade = 0;
+        totalMatchesMade = 0;
     }
     public void DestroyCards()
     {
@@ -110,9 +112,10 @@ public class CardManager : MonoBehaviour
         if (card1.cardData.name == card2.cardData.name)
         {
             // Match!
-            playerScore.AddScore(100);
-            matchesMade++;
-            if (matchesMade >= matchesNeeded)
+            comboLevel++;
+            playerScore.AddScore(100 * comboLevel, comboLevel);
+            totalMatchesMade++;
+            if (totalMatchesMade >= matchesNeeded)
             {
                 // Win State
                 GameWin();
@@ -123,8 +126,9 @@ public class CardManager : MonoBehaviour
             // Not a match
             card1.SetFlipped(false);
             card2.SetFlipped(false);
+            comboLevel = 0;
+            playerScore.SetComboLevel(0);
         }
-
 
     }
 
