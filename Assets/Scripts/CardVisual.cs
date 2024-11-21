@@ -13,8 +13,14 @@ public class CardVisual : MonoBehaviour
     [SerializeField] Image faceFrontImage;
 
     private bool isFlipped = false;
+    private bool isAnimating = false;
+
     private Card parentCard;
     private Transform cardTransform;
+
+    [Header("Flip Animation")]
+    [SerializeField] float flipDuration = 0.7f;
+    [SerializeField] AnimationCurve flipAnimCurve;
 
     public void Initialize(Card _parentCard)
     {
@@ -32,8 +38,8 @@ public class CardVisual : MonoBehaviour
 
         itemImage.sprite = _parentCard.cardData.cardFaceSprite;
         backgroundImage.color = _parentCard.cardData.bgColor;
-    
-    
+
+        SetIsFlipped(false);
     }
 
     void Start()
@@ -41,12 +47,65 @@ public class CardVisual : MonoBehaviour
         
     }
 
-    void SetIsFlipped(bool state)
+    private void Update()
+    {
+        if (isAnimating)
+        {
+            if (transform.eulerAngles.y > 90)
+                SetSpriteOrder(true);
+            else
+                SetSpriteOrder(false);
+        }
+    }
+
+
+    public void SetIsFlipped(bool state, bool animate = false)
     {
 
         isFlipped = state;
 
-        if (isFlipped)
+        transform.eulerAngles = new Vector3(transform.eulerAngles.x, isFlipped ? 180f : 0f, transform.eulerAngles.z);
+
+        if (animate)
+        { 
+            StartCoroutine(AnimateFlip());
+        }
+        else
+        {
+            SetSpriteOrder(isFlipped);
+        }
+    
+    }
+
+    IEnumerator AnimateFlip()
+    {
+        isAnimating = true;
+
+        float startRotation = isFlipped ? 0f : 180f;
+        float endRotation = isFlipped ? 180f : 0f;
+        float t = 0.0f;
+        
+
+        while (t < flipDuration)
+        {
+            t += Time.deltaTime;
+
+            float rot = Mathf.Lerp(startRotation, endRotation, flipAnimCurve.Evaluate(t / flipDuration));
+
+            transform.eulerAngles = new Vector3(transform.eulerAngles.x, rot, transform.eulerAngles.z);
+
+            yield return null;
+        }
+
+        transform.eulerAngles = new Vector3(transform.eulerAngles.x, endRotation, transform.eulerAngles.z);
+
+        isAnimating = false;
+
+    }
+
+    void SetSpriteOrder(bool state)
+    {
+        if (state)
             faceBackImage.transform.SetAsFirstSibling();
         else
             faceBackImage.transform.SetAsLastSibling();
