@@ -6745,6 +6745,7 @@ MonoBehaviour:
   levelSelectionManager: {fileID: 612913057}
   playerScore: {fileID: 1857198933}
   levelComplete: {fileID: 1195211894}
+  gameWinSound: {fileID: 8300000, guid: eb6ce08b8b198a14ea7e8036cf5fb954, type: 3}
 --- !u!4 &728583761
 Transform:
   m_ObjectHideFlags: 0
@@ -6753,8 +6754,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 728583759}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -8779,7 +8780,7 @@ MonoBehaviour:
   m_ChildAlignment: 4
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 708.4911, y: 708.4911}
+  m_CellSize: {x: 348.06183, y: 348.06183}
   m_Spacing: {x: 24, y: 24}
   m_Constraint: 1
   m_ConstraintCount: 3
@@ -14632,6 +14633,18 @@ MonoBehaviour:
   onGameWinEvent:
     m_PersistentCalls:
       m_Calls: []
+  cardFlipSounds:
+  - {fileID: 8300000, guid: dade7057430eaa94c98184c321715a3c, type: 3}
+  - {fileID: 8300000, guid: 9ed6cc9412cf995429b022ea79d22d5a, type: 3}
+  - {fileID: 8300000, guid: 011b7d557de7e734886ddd913e25d0e1, type: 3}
+  cardMatchSounds:
+  - {fileID: 8300000, guid: c85a700af38871b4880e9dfe1b302d05, type: 3}
+  - {fileID: 8300000, guid: 3ceb8efcdb98bc84abac694d4ef565c7, type: 3}
+  - {fileID: 8300000, guid: 5900c764e6e26a14cbd44379b9d9d019, type: 3}
+  cardMismatchSounds:
+  - {fileID: 8300000, guid: 6d5ba5bec856cc74080354e1b27cb3bb, type: 3}
+  - {fileID: 8300000, guid: ca4255a2c7d03c7439eeb80525a7e7c4, type: 3}
+  - {fileID: 8300000, guid: b597b2bda85481d4d80f85217fdc6721, type: 3}
 --- !u!4 &1529795261
 Transform:
   m_ObjectHideFlags: 0
@@ -14640,8 +14653,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1529795259}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -19535,8 +19548,8 @@ SceneRoots:
   m_Roots:
   - {fileID: 519420032}
   - {fileID: 728583761}
-  - {fileID: 612913056}
   - {fileID: 1529795261}
+  - {fileID: 612913056}
   - {fileID: 1857198934}
   - {fileID: 1126972053}
   - {fileID: 675672584}

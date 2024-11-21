@@ -20,8 +20,11 @@ public class Card : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler, IP
     private Image cardButton;
     public bool isHovering { get; private set; }
 
+    [System.NonSerialized] public UnityEvent<Card> cardStartFlipEvent = new UnityEvent<Card>();
     [System.NonSerialized] public UnityEvent<Card> cardRevealedEvent = new UnityEvent<Card>();
 
+
+    
     private void Awake()
     {
         canvas = GetComponentInParent<Canvas>();
@@ -46,9 +49,11 @@ public class Card : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler, IP
     public void SetFlipped(bool state)
     {
         if (!isFlipped)
-        { 
+        {
+            // Flip Card
             isFlipped = state; // Set state immediately when flipping
             cardButton.raycastTarget = false;
+            cardStartFlipEvent.Invoke(this);
         }
         
         cardVisual.SetIsFlipped(state, true);

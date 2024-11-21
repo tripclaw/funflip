@@ -26,6 +26,11 @@ public class CardManager : MonoBehaviour
     [HideInInspector]
     public UnityEvent onGameWinEvent = new UnityEvent();
 
+    [Header("Sounds")]
+    [SerializeField] AudioClip[] cardFlipSounds;
+    [SerializeField] AudioClip[] cardMatchSounds;
+    [SerializeField] AudioClip[] cardMismatchSounds;
+
     public void Awake()
     {
 
@@ -52,6 +57,7 @@ public class CardManager : MonoBehaviour
                 card.Initialize(cardData);
                 currentCards.Add(card);
                 card.cardRevealedEvent.AddListener(OnCardFlipped);
+                card.cardStartFlipEvent.AddListener(OnCardStartFlip);
             }
             matchesNeeded++;
         }
@@ -96,6 +102,11 @@ public class CardManager : MonoBehaviour
         return cardDataCopy;
     }
 
+    void OnCardStartFlip(Card card)
+    {
+        PlayCardFlipSound();
+    }
+    
     void OnCardFlipped(Card card)
     {
         selectedCards.Add(card);
@@ -115,6 +126,8 @@ public class CardManager : MonoBehaviour
             comboLevel++;
             playerScore.AddScore(100 * comboLevel, comboLevel);
             totalMatchesMade++;
+            PlayMatchSound();
+
             if (totalMatchesMade >= matchesNeeded)
             {
                 // Win State
@@ -128,6 +141,7 @@ public class CardManager : MonoBehaviour
             card2.SetFlipped(false);
             comboLevel = 0;
             playerScore.SetComboLevel(0);
+            PlayMismatchSound();
         }
 
     }
@@ -136,4 +150,23 @@ public class CardManager : MonoBehaviour
     {
         onGameWinEvent.Invoke();
     }
+
+    void PlayCardFlipSound()
+    {
+        int randomIndex = UnityEngine.Random.Range(0, cardFlipSounds.Length);
+        AudioSource.PlayClipAtPoint(cardFlipSounds[randomIndex], transform.position);
+    }
+    void PlayMatchSound()
+    {
+        int randomIndex = UnityEngine.Random.Range(0, cardMatchSounds.Length);
+        AudioSource.PlayClipAtPoint(cardMatchSounds[randomIndex], transform.position, 0.8f);
+    
+    }
+
+    void PlayMismatchSound()
+    {
+        int randomIndex = UnityEngine.Random.Range(0, cardMismatchSounds.Length);
+        AudioSource.PlayClipAtPoint(cardMismatchSounds[randomIndex], transform.position);
+    }
+
 }

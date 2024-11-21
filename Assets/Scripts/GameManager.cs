@@ -12,6 +12,8 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] GameObject levelComplete;
 
+    [Header("Sounds")]
+    [SerializeField] AudioClip gameWinSound;
 
     // Start is called before the first frame update
     void Start()
@@ -74,7 +76,14 @@ public class GameManager : MonoBehaviour
         while (playerScore.isCounting)
             yield return null;
 
+        PlayWinSound();
+
         levelComplete.SetActive(true);
 
+    }
+
+    void PlayWinSound()
+    {
+        AudioSource.PlayClipAtPoint(gameWinSound, transform.position);
     }
 }
