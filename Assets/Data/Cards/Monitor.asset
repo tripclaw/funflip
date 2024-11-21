@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Monitor
   m_EditorClassIdentifier: 
   cardFaceSprite: {fileID: 21300000, guid: c06c21cb53981014fb8aff8a61f83320, type: 3}
-  bgColor: {r: 0.46274507, g: 0.6586952, b: 0.9764706, a: 1}
+  bgColor: {r: 0.97735846, g: 0.60278916, b: 0.49974358, a: 1}

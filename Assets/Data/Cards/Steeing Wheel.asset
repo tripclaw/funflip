@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Steeing Wheel
   m_EditorClassIdentifier: 
   cardFaceSprite: {fileID: 21300000, guid: f316984b246afab4a864c94f8541a57f, type: 3}
-  bgColor: {r: 0.6364332, g: 0.46274507, b: 0.9764706, a: 1}
+  bgColor: {r: 0.46274507, g: 0.9764706, b: 0.577921, a: 1}

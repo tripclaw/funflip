@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: First Aid
   m_EditorClassIdentifier: 
   cardFaceSprite: {fileID: 21300000, guid: c0cf04e8e176f014f8d5258946f17295, type: 3}
-  bgColor: {r: 0.4628621, g: 0.7661347, b: 0.9773585, a: 1}
+  bgColor: {r: 0.9764706, g: 0.8947954, b: 0.46274507, a: 1}

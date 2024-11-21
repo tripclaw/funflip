@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Walkie Talkie
   m_EditorClassIdentifier: 
   cardFaceSprite: {fileID: 21300000, guid: eb420a586ceaffd489f5215a70c3f44d, type: 3}
-  bgColor: {r: 0.6364332, g: 0.46274507, b: 0.9764706, a: 1}
+  bgColor: {r: 0.46274507, g: 0.4671288, b: 0.9764706, a: 1}

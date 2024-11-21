@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: USB Drive
   m_EditorClassIdentifier: 
   cardFaceSprite: {fileID: 21300000, guid: 060eded89a17c534593e91225385b0e1, type: 3}
-  bgColor: {r: 0.6364332, g: 0.46274507, b: 0.9764706, a: 1}
+  bgColor: {r: 0.46274507, g: 0.6383597, b: 0.9764706, a: 1}

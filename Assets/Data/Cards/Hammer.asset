@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Hammer
   m_EditorClassIdentifier: 
   cardFaceSprite: {fileID: 21300000, guid: e8b2f1e614f004d4c8536a4fcf35f0ea, type: 3}
-  bgColor: {r: 0.9764706, g: 0.49803105, b: 0.46274507, a: 1}
+  bgColor: {r: 1, g: 0.7447016, b: 0.39811313, a: 1}

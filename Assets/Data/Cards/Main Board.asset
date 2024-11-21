@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Main Board
   m_EditorClassIdentifier: 
   cardFaceSprite: {fileID: 21300000, guid: f9ae5a654f7f80642beddfb7d438415d, type: 3}
-  bgColor: {r: 0.9764706, g: 0.46274507, b: 0.8731921, a: 1}
+  bgColor: {r: 0.97735846, g: 0.60278916, b: 0.49974358, a: 1}
