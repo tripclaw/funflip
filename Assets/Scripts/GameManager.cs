@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    [SerializeField] CardManager cardManager;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -12,6 +14,7 @@ public class GameManager : MonoBehaviour
         // Init Game Config / Restore Save Game
 
         // Init UI
+        cardManager.CreateCards(6, 6);
 
         // Start Game
     }
