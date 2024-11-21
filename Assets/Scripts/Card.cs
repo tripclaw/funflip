@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
-public class Card : MonoBehaviour, IPointerDownHandler
+public class Card : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler, IPointerExitHandler
 {
     private Canvas canvas;
 
@@ -16,11 +17,15 @@ public class Card : MonoBehaviour, IPointerDownHandler
 
     private bool isFlipped = false;
 
+    private Image cardButton;
+    public bool isHovering { get; private set; }
+
     [System.NonSerialized] public UnityEvent<Card> cardRevealedEvent = new UnityEvent<Card>();
 
     private void Awake()
     {
         canvas = GetComponentInParent<Canvas>();
+        cardButton = GetComponent<Image>();
     }
 
     public void Initialize(CardData _cardData)
@@ -37,16 +42,14 @@ public class Card : MonoBehaviour, IPointerDownHandler
         cardVisual.cardFlipCompleteEvent.AddListener(OnCardFlipComplete);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     public void SetFlipped(bool state)
     {
         if (!isFlipped)
+        { 
             isFlipped = state; // Set state immediately when flipping
+            cardButton.raycastTarget = false;
+        }
         
         cardVisual.SetIsFlipped(state, true);
     }
@@ -66,8 +69,22 @@ public class Card : MonoBehaviour, IPointerDownHandler
         if (state)
             cardRevealedEvent.Invoke(this);
         else
+        {
             isFlipped = false; // Set state after flip is complete
+            cardButton.raycastTarget = true;
+        }    
     }
 
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if (isFlipped)
+            return;
 
+        isHovering = true;
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        isHovering = false;
+    }
 }

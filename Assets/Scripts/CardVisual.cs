@@ -18,13 +18,20 @@ public class CardVisual : MonoBehaviour
 
     private Card parentCard;
     private Transform cardTransform;
+    private RectTransform rectTransform;
 
     [System.NonSerialized] public UnityEvent<bool> cardFlipCompleteEvent = new UnityEvent<bool>();
 
 
     [Header("Flip Animation")]
-    [SerializeField] float flipDuration = 0.7f;
+    [SerializeField] float flipDuration = 0.45f;
     [SerializeField] AnimationCurve flipAnimCurve;
+    [SerializeField] float nonMatchDelay = 0.5f;
+
+    void Awake()
+    {
+        rectTransform = GetComponent<RectTransform>();
+    }
 
     public void Initialize(Card _parentCard)
     {
@@ -46,10 +53,9 @@ public class CardVisual : MonoBehaviour
         SetIsFlipped(false);
     }
 
-    void Start()
-    {
-        
-    }
+    float targetHoverHeight = 0f;
+    float currentHoverHeight = 0f;
+    float hoverSpeed = 10f;
 
     private void Update()
     {
@@ -60,6 +66,20 @@ public class CardVisual : MonoBehaviour
             else
                 SetSpriteOrder(false);
         }
+
+        if (parentCard.isHovering)
+        {
+            targetHoverHeight = 12f;
+        }
+        else
+        {
+            targetHoverHeight = 0f;
+        }
+
+        currentHoverHeight = Mathf.Lerp(currentHoverHeight, targetHoverHeight, hoverSpeed * Time.deltaTime);
+        rectTransform.anchoredPosition = new Vector2(currentHoverHeight/2f, currentHoverHeight);
+        // shadow.rectTransform.anchoredPosition = new Vector2(-currentHoverHeight * 2f, -currentHoverHeight * 2f);
+
     }
 
 
@@ -88,13 +108,13 @@ public class CardVisual : MonoBehaviour
         float startRotation = isFlipped ? 0f : 180f;
         float endRotation = isFlipped ? 180f : 0f;
         float t = 0.0f;
-        
+        float duration = isFlipped ? flipDuration : flipDuration * 0.66f;
 
-        while (t < flipDuration)
+        while (t < duration)
         {
             t += Time.deltaTime;
 
-            float rot = Mathf.Lerp(startRotation, endRotation, flipAnimCurve.Evaluate(t / flipDuration));
+            float rot = Mathf.Lerp(startRotation, endRotation, flipAnimCurve.Evaluate(t / duration));
 
             transform.eulerAngles = new Vector3(transform.eulerAngles.x, rot, transform.eulerAngles.z);
 
@@ -102,6 +122,9 @@ public class CardVisual : MonoBehaviour
         }
 
         transform.eulerAngles = new Vector3(transform.eulerAngles.x, endRotation, transform.eulerAngles.z);
+
+        if (isFlipped)
+            yield return new WaitForSeconds(nonMatchDelay);
 
         isAnimating = false;
 
@@ -116,6 +139,7 @@ public class CardVisual : MonoBehaviour
         else
             faceBackImage.transform.SetAsLastSibling();
     }
+
 
 
 }
