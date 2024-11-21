@@ -19,13 +19,18 @@ public class CardManager : MonoBehaviour
 
     public void Awake()
     {
-        ResetCardSet();
+        
     }
 
     public void CreateCards(int layoutSizeX, int layoutSizeY)
     {
         Debug.Log("Create cards " + layoutSizeX + " x " + layoutSizeY);
-         
+
+        if (currentCards.Count > 0)
+            DestroyCards();
+
+        ResetCardSet();
+
         int cardCount = (layoutSizeX * layoutSizeY) / 2;
         for (int i = 0; i < cardCount; i++)
         { 
@@ -51,6 +56,7 @@ public class CardManager : MonoBehaviour
             card.cardRevealedEvent.RemoveListener(OnCardFlipped);
             Destroy(card.gameObject);
         }
+        currentCards.Clear();
     }
 
     void ShuffleCards()
