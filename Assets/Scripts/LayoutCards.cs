@@ -8,8 +8,8 @@ public class LayoutCards : MonoBehaviour
     RectTransform rectTransform;
     GridLayoutGroup grid;
 
-    public int itemCountX = 2;
-    public int itemCountY = 2;
+    private int itemCountX = 2;
+    private int itemCountY = 2;
 
     private void Awake()
     {
@@ -26,8 +26,15 @@ public class LayoutCards : MonoBehaviour
         rectTransform = transform as RectTransform;
         grid = GetComponent<GridLayoutGroup>();
         grid.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
+    }
+
+    public void SetDimensions(int sizeX, int sizeY)
+    {
+        itemCountX = sizeX;
+        itemCountY = sizeY;
         grid.constraintCount = itemCountX;
     }
+
     void OnRectTransformDimensionsChange()
     {
         UpdateGrid();

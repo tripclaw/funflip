@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour
         // Init Game Config / Restore Save Game
 
         // Init UI
-        cardManager.CreateCards(6, 6);
+        cardManager.CreateCards(3, 4);
 
         // Start Game
     }
