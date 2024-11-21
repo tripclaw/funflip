@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 438bd935cb84b734aa5715880ab3007f, type: 3}
+  m_Name: Level Data
+  m_EditorClassIdentifier: 
+  levels:
+  - name: 3x2
+    size: {x: 3, y: 2}
+    emptyCardIndexes: 
+  - name: 3x3
+    size: {x: 3, y: 3}
+    emptyCardIndexes: 04000000
+  - name: 3x4
+    size: {x: 3, y: 4}
+    emptyCardIndexes: 
+  - name: 4x4
+    size: {x: 4, y: 4}
+    emptyCardIndexes: 
+  - name: 3x6
+    size: {x: 3, y: 6}
+    emptyCardIndexes: 
+  - name: 5x4
+    size: {x: 5, y: 4}
+    emptyCardIndexes: 
+  - name: 4x6
+    size: {x: 4, y: 6}
+    emptyCardIndexes: 
+  - name: 6x6
+    size: {x: 6, y: 6}
+    emptyCardIndexes: 

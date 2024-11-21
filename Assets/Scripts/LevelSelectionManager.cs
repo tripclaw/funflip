@@ -8,15 +8,8 @@ public class LevelSelectionManager : MonoBehaviour
     [SerializeField]
     GameManager gameManager;
 
-    [System.Serializable]
-    public class LevelDefinition
-    {
-        public string name;
-        public Vector2Int size = new Vector2Int(3, 4);
-    }
-
     [SerializeField]
-    LevelDefinition[] levels;
+    LevelData levelData;
 
     [SerializeField]
     GameObject levelSelectionPanel;
@@ -49,13 +42,13 @@ public class LevelSelectionManager : MonoBehaviour
 
     public void StartLevel(int level)
     {
-        if (level < 0 || level - 1 > levels.Length)
+        if (level < 0 || level - 1 > levelData.levels.Length)
         {
-            Debug.LogError("Level out of range: " + level + " / " + levels.Length);
+            Debug.LogError("Level out of range: " + level + " / " + levelData.levels.Length);
             level = 0;
         }
         
-        gameManager.StartNewGame(levels[level].size.x, levels[level].size.y);
+        gameManager.StartNewGame(levelData.levels[level]);
         currentLevel = level;
         PlayerPrefs.SetInt("CurrentLevel", level);
         PlayerPrefs.Save();

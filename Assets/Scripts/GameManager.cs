@@ -15,34 +15,15 @@ public class GameManager : MonoBehaviour
     [Header("Sounds")]
     [SerializeField] AudioClip gameWinSound;
 
-    // Start is called before the first frame update
+    Coroutine onGameWinCoroutine;
+
     void Start()
     {
         levelSelectionManager.LoadPreviousGameState();
         cardManager.onGameWinEvent.AddListener(OnGameWin);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (Input.GetKeyUp(KeyCode.Alpha1))
-            StartNewGame(2, 3);
-        else if (Input.GetKeyUp(KeyCode.Alpha2))
-            StartNewGame(3, 4);
-        else if (Input.GetKeyUp(KeyCode.Alpha3))
-            StartNewGame(4, 4);
-        else if (Input.GetKeyUp(KeyCode.Alpha4))
-            StartNewGame(6, 4);
-        else if (Input.GetKeyUp(KeyCode.Alpha5))
-            StartNewGame(5, 6);
-        else if (Input.GetKeyUp(KeyCode.Alpha6))
-            StartNewGame(6, 6);
-        else if (Input.GetKeyUp(KeyCode.Alpha7))
-            StartNewGame(8, 8);
-
-    }
-
-    public void StartNewGame(int sizeX, int sizeY)
+    public void StartNewGame(LevelDefinition levelDef)
     {
 
         if (onGameWinCoroutine != null)
@@ -54,18 +35,13 @@ public class GameManager : MonoBehaviour
         // Init UI
         levelComplete.SetActive(false);
 
-        cardManager.CreateCards(sizeX, sizeY);
+        cardManager.CreateCards(levelDef);
 
         // Start Game
 
     }
 
-    public void StartLevel(int sizeX, int sizeY)
-    {
-        StartNewGame(sizeX, sizeY);
-    }
 
-    Coroutine onGameWinCoroutine;
     public void OnGameWin()
     {
         onGameWinCoroutine = StartCoroutine(OnGameWinSequence());       

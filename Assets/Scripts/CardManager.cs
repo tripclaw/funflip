@@ -36,9 +36,11 @@ public class CardManager : MonoBehaviour
 
     }
 
-    public void CreateCards(int layoutSizeX, int layoutSizeY)
+    public void CreateCards(LevelDefinition levelDef)
     {
-        Debug.Log("Creating card layout " + layoutSizeX + " x " + layoutSizeY);
+
+        
+        Debug.Log("Creating card layout " + levelDef.size.x + " x " + levelDef.size.y);
 
         if (currentCards.Count > 0)
             DestroyCards();
@@ -46,7 +48,7 @@ public class CardManager : MonoBehaviour
         ResetCardSet();
         matchesNeeded = 0;
 
-        int cardCount = (layoutSizeX * layoutSizeY) / 2;
+        int cardCount = (levelDef.size.x * levelDef.size.y) / 2;
         for (int i = 0; i < cardCount; i++)
         { 
             CardData cardData = GetRandomCard();
@@ -61,8 +63,18 @@ public class CardManager : MonoBehaviour
             }
             matchesNeeded++;
         }
-        layoutCards.SetDimensions(layoutSizeX, layoutSizeY);
+        layoutCards.SetDimensions(levelDef.size.x, levelDef.size.y);
         ShuffleCards();
+        foreach(int emptyCardIndex in levelDef.emptyCardIndexes)
+        {
+            Debug.Log("creating empty index");
+            GameObject emptyPlaceholder = new GameObject();
+            emptyPlaceholder.AddComponent<RectTransform>();
+            emptyPlaceholder.name = "Empty";
+            emptyPlaceholder.transform.SetParent(layoutCards.transform);
+            emptyPlaceholder.transform.SetSiblingIndex(emptyCardIndex);
+        }
+
         totalMatchesMade = 0;
     }
     public void DestroyCards()
@@ -72,8 +84,12 @@ public class CardManager : MonoBehaviour
         foreach (Card card in currentCards)
         {
             card.cardRevealedEvent.RemoveListener(OnCardFlipped);
-            Destroy(card.gameObject);
         }
+        foreach (Transform child in layoutCards.transform)
+        {
+            Destroy(child.gameObject);
+        }
+
         currentCards.Clear();
     }
 
