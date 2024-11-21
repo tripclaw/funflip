@@ -10,7 +10,7 @@ public class PlayerScore : MonoBehaviour {
 
     [SerializeField] PlayerScoreUI playerScoreUI;
 
-
+    public bool isCounting { get { return playerScoreUI.isCounting; } }
     public void Awake()
     {
         playerScoreUI.Init(this);

@@ -6,18 +6,19 @@ using UnityEngine.UI;
 
 public class PlayerScoreUI : MonoBehaviour
 {
-  
+
     PlayerScore playerScore;
 
     [SerializeField] Text scoreText;
 
     int currentDisplayScore = 0;
     int targetDisplayScore = 0;
-    
+
     float maxCountUpTime = 1.5f;
 
     [SerializeField] Text addedPointsText;
 
+    public bool isCounting { get; private set; }
 
     public void Init(PlayerScore _playerScore)
     {
@@ -84,6 +85,7 @@ public class PlayerScoreUI : MonoBehaviour
 
         float t = 0.0f;
         int startingScore = currentDisplayScore;
+        isCounting = true;
 
         while (t < scoreCountDuration)
         {
@@ -96,6 +98,7 @@ public class PlayerScoreUI : MonoBehaviour
             yield return null;
         }
 
+        isCounting = false;
         currentDisplayScore = targetDisplayScore;
         SetText();
         addedPointsText.text = "";

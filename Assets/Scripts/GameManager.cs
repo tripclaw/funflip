@@ -24,24 +24,28 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         if (Input.GetKeyUp(KeyCode.Alpha1))
-            StartLevel(2, 3);
+            StartNewGame(2, 3);
         else if (Input.GetKeyUp(KeyCode.Alpha2))
-            StartLevel(3, 4);
+            StartNewGame(3, 4);
         else if (Input.GetKeyUp(KeyCode.Alpha3))
-            StartLevel(4, 4);
+            StartNewGame(4, 4);
         else if (Input.GetKeyUp(KeyCode.Alpha4))
-            StartLevel(6, 4);
+            StartNewGame(6, 4);
         else if (Input.GetKeyUp(KeyCode.Alpha5))
-            StartLevel(5, 6);
+            StartNewGame(5, 6);
         else if (Input.GetKeyUp(KeyCode.Alpha6))
-            StartLevel(6, 6);
+            StartNewGame(6, 6);
         else if (Input.GetKeyUp(KeyCode.Alpha7))
-            StartLevel(8, 8);
+            StartNewGame(8, 8);
 
     }
 
-    void CreateGame(int sizeX, int sizeY)
+    public void StartNewGame(int sizeX, int sizeY)
     {
+
+        if (onGameWinCoroutine != null)
+            StopCoroutine(onGameWinCoroutine);
+
         // Init Game Config / (To Do) Restore Save Game 
         playerScore.Reset();
 
@@ -56,12 +60,21 @@ public class GameManager : MonoBehaviour
 
     public void StartLevel(int sizeX, int sizeY)
     {
-        CreateGame(sizeX, sizeY);
+        StartNewGame(sizeX, sizeY);
     }
 
-
+    Coroutine onGameWinCoroutine;
     public void OnGameWin()
     {
+        onGameWinCoroutine = StartCoroutine(OnGameWinSequence());       
+    }
+
+    IEnumerator OnGameWinSequence()
+    {
+        while (playerScore.isCounting)
+            yield return null;
+
         levelComplete.SetActive(true);
+
     }
 }

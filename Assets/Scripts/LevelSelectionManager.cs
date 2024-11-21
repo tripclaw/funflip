@@ -55,7 +55,7 @@ public class LevelSelectionManager : MonoBehaviour
             level = 0;
         }
         
-        gameManager.StartLevel(levels[level].size.x, levels[level].size.y);
+        gameManager.StartNewGame(levels[level].size.x, levels[level].size.y);
         currentLevel = level;
         PlayerPrefs.SetInt("CurrentLevel", level);
         PlayerPrefs.Save();
