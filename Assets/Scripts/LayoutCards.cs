@@ -51,7 +51,7 @@ public class LayoutCards : MonoBehaviour
         Init();
     }
 #endif
-    void UpdateGrid()
+    public void UpdateGrid()
     {
         if (grid == null)
             return;
@@ -83,4 +83,5 @@ public class LayoutCards : MonoBehaviour
             transform.GetChild(i).gameObject.SetActive(i < itemCountX * itemCountY);
         }
     }
+   
 }

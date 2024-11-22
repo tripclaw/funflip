@@ -118,6 +118,7 @@ public class CardManager : MonoBehaviour
     {
         yield return new WaitForEndOfFrame();
         AddEmptyCards(levelDef);
+        layoutCards.UpdateGrid();
     }
 
     public void DestroyCards()
