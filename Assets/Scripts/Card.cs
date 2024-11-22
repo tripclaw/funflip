@@ -15,10 +15,10 @@ public class Card : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler, IP
 
     public CardData cardData;
 
-    private bool isFlipped = false;
-
     private Image cardButton;
+    public bool isFlipped { get; private set; }
     public bool isHovering { get; private set; }
+    public bool isMatched { get; private set; }
 
     [System.NonSerialized] public UnityEvent<Card> cardStartFlipEvent = new UnityEvent<Card>();
     [System.NonSerialized] public UnityEvent<Card> cardRevealedEvent = new UnityEvent<Card>();
@@ -35,6 +35,7 @@ public class Card : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler, IP
     {
         cardData = _cardData;
         gameObject.name += " " + cardData.name;
+        isMatched = false;
     }
 
     void Start()
@@ -57,6 +58,15 @@ public class Card : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler, IP
         }
         
         cardVisual.SetIsFlipped(state, true);
+    }
+
+    public void SetMatched(bool state, bool loadState = false)
+    {
+        isMatched = state;
+        if (loadState)
+        {
+            isFlipped = true;
+        }
     }
 
     public void OnPointerDown(PointerEventData eventData)

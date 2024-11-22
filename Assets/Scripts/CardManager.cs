@@ -17,9 +17,11 @@ public class CardManager : MonoBehaviour
 
     public CardSet cardSet;
 
-    List<CardData> availableCards = new List<CardData>();
     List<Card> currentCards = new List<Card>();
     List<Card> selectedCards = new List<Card>();
+
+    List<int> availableCardIndexes = new List<int>();
+    List<int> chosenCardIndexes = new List<int>(); 
 
     int matchesNeeded = 1;
     int totalMatchesMade = 0;
@@ -39,47 +41,44 @@ public class CardManager : MonoBehaviour
 
     }
 
+    #region Card Creation
     public void CreateCards(LevelDefinition levelDef)
     {
-
-        
-        Debug.Log("Creating card layout " + levelDef.size.x + " x " + levelDef.size.y);
 
         if (currentCards.Count > 0)
             DestroyCards();
 
-        ResetCardSet();
-        matchesNeeded = 0;
         bool offByOne = false;
 
         offByOne = (levelDef.size.x * levelDef.size.y) % 2 == 1;
         int emptyCount = levelDef.emptyCardIndexes.Count();
         int size = (levelDef.size.x * levelDef.size.y) - emptyCount;
-        int cardCount = size / 2;
+        int cardPairsCount = size / 2;
 
-        cardCount -= (offByOne ? emptyCount - 1 : emptyCount);
+        cardPairsCount -= (offByOne ? emptyCount - 1 : emptyCount);
 
-        List<CardData> cardDataList = new List<CardData>();
+        matchesNeeded = cardPairsCount; 
 
-        for (int i = 0; i < cardCount; i++)
+        Debug.Log("Creating card layout " + levelDef.size.x + " x " + levelDef.size.y + " card pairs count: " + cardPairsCount);
+
+        ResetAvailableCardIndexes();      
+
+        bool loadedState = LoadCardsShuffleState();
+
+        if (!loadedState)
         {
-            CardData cardData = GetRandomCard();
-
-            // Add a pair of each random card
-            for (int x = 0; x < 2; x++)
-            {
-                cardDataList.Add(cardData);
-            }
-            matchesNeeded++;
+            chosenCardIndexes = GetRandomCardsFromCardSet(cardPairsCount);
+            Debug.Log("Shuffling Cards...");
+            ShuffleCardIndexes();
+            SaveCardsShuffleState();
         }
 
-        // shuffle cardDataList
-        ShuffleCardDataList(cardDataList);
-
-        foreach (CardData cd in cardDataList)
-        {                
+        for (int i = 0; i < chosenCardIndexes.Count; i++)
+        {
+            // Make cards from chosen card indexes
+            CardData cardDataCopy = Instantiate(cardSet.cards[chosenCardIndexes[i]]);           
             Card card = Instantiate(cardPrefab, layoutCards.transform).GetComponent<Card>();
-            card.Initialize(cd);
+            card.Initialize(cardDataCopy);
             currentCards.Add(card);
             card.cardRevealedEvent.AddListener(OnCardFlipped);
             card.cardStartFlipEvent.AddListener(OnCardStartFlip);
@@ -87,11 +86,10 @@ public class CardManager : MonoBehaviour
 
         layoutCards.SetDimensions(levelDef.size.x, levelDef.size.y);
 
-        // ShuffleCardsBySiblingIndex();
-
-        StartCoroutine(AddEmptyCardsLate(levelDef));      
+        StartCoroutine(AddEmptyCardsLate(levelDef));
 
         totalMatchesMade = 0;
+        if (loadedState) LoadCardsMatchedState();
     }
 
     public void AddEmptyCards(LevelDefinition levelDef)
@@ -134,54 +132,59 @@ public class CardManager : MonoBehaviour
         currentCards.Clear();
     }
 
-    void ShuffleCardsBySiblingIndex()
+    void ShuffleCardIndexes()
     {
         List<int> allIndexes = new List<int>();
-        for (int i = 0; i < layoutCards.transform.childCount; i++)
+        for (int i = 0; i < chosenCardIndexes.Count; i++)
             allIndexes.Add(i);
 
-        for (int i = 0; i < layoutCards.transform.childCount; i++)
-        {
-            int pickedIndex = UnityEngine.Random.Range(0, allIndexes.Count);
-            int randomSiblingIndex = allIndexes[pickedIndex];
-            allIndexes.RemoveAt(pickedIndex);
-            layoutCards.transform.GetChild(i).SetSiblingIndex(randomSiblingIndex);
-        }
-    }
-
-    void ShuffleCardDataList(List<CardData>cardDataList)
-    {
-        List<int> allIndexes = new List<int>();
-        for (int i = 0; i < cardDataList.Count; i++)
-            allIndexes.Add(i);
-
-        int count = cardDataList.Count;
+        int count = chosenCardIndexes.Count;
         for (var i = 0; i < count - 1; ++i)
         {
             int rand = UnityEngine.Random.Range(i, count);
-            CardData tempCard = cardDataList[i];
-            cardDataList[i] = cardDataList[rand];
-            cardDataList[rand] = tempCard;
+            int temp = chosenCardIndexes[i];
+            chosenCardIndexes[i] = chosenCardIndexes[rand];
+            chosenCardIndexes[rand] = temp;
         }
     }
 
-    void ResetCardSet()
+    List<int> GetRandomCardsFromCardSet(int cardPairsCount)
     {
-        availableCards.Clear();
+        List<int> cardIndexes = new List<int>();
+
+        for (int i = 0; i < cardPairsCount; i++)
+        {
+            int cardIndex = GetRandomCardIndex();
+
+            // Add a pair of each random card
+            for (int x = 0; x < 2; x++)
+            {
+                cardIndexes.Add(cardIndex);
+            }            
+        }
+
+        return cardIndexes;
+    }
+
+    void ResetAvailableCardIndexes()
+    {
+        availableCardIndexes.Clear();
         for (int i = 0; i < cardSet.cards.Length; i++)
         {
-            availableCards.Add(cardSet.cards[i]);
+            availableCardIndexes.Add(i);
         }
     }
 
-    CardData GetRandomCard()
+    int GetRandomCardIndex()
     {
-        int i = UnityEngine.Random.Range(0, availableCards.Count);
-        CardData cardDataCopy = Instantiate(availableCards[i]);
-        availableCards.RemoveAt(i);
-        return cardDataCopy;
+        int i = UnityEngine.Random.Range(0, availableCardIndexes.Count);
+        int chosenCardIndex = availableCardIndexes[i];
+        availableCardIndexes.RemoveAt(i);
+        return chosenCardIndex;
     }
+    #endregion
 
+    #region Events from Cards
     void OnCardStartFlip(Card card)
     {
         PlayCardFlipSound();
@@ -197,7 +200,9 @@ public class CardManager : MonoBehaviour
             selectedCards.Clear();
         }
     }
+    #endregion
 
+    #region Card Game Logic
     void CheckCardsForMatch(Card card1, Card card2)
     {
         if (card1.cardData.name == card2.cardData.name)
@@ -207,11 +212,17 @@ public class CardManager : MonoBehaviour
             playerScore.AddScore(100 * comboLevel, comboLevel);
             totalMatchesMade++;
             PlayMatchSound();
+            card1.SetMatched(true);
+            card2.SetMatched(true);
 
             if (totalMatchesMade >= matchesNeeded)
             {
                 // Win State
                 GameWin();
+            }
+            else
+            {
+                SaveCardsMatchedState(true);
             }
         }
         else
@@ -223,14 +234,16 @@ public class CardManager : MonoBehaviour
             playerScore.SetComboLevel(0);
             PlayMismatchSound();
         }
-
+        // Debug.Log("totalMatchesMade: " + totalMatchesMade + " matchesNeeded: " + matchesNeeded);
     }
 
     void GameWin()
     {
         onGameWinEvent.Invoke();
     }
+    #endregion
 
+    #region Sound
     void PlayCardFlipSound()
     {
         int randomIndex = UnityEngine.Random.Range(0, cardFlipSounds.Length);
@@ -242,11 +255,103 @@ public class CardManager : MonoBehaviour
         AudioSource.PlayClipAtPoint(cardMatchSounds[randomIndex], transform.position, 0.8f);
     
     }
-
     void PlayMismatchSound()
     {
         int randomIndex = UnityEngine.Random.Range(0, cardMismatchSounds.Length);
         AudioSource.PlayClipAtPoint(cardMismatchSounds[randomIndex], transform.position);
     }
+    #endregion
+
+    #region Save and Load
+    public void SaveCardsShuffleState(bool saveNow = false)
+    {
+        // Save randomized card order
+        string chosenCardIndexesTxt = JsonUtility.ToJson(new JsonListWrapper<int>(chosenCardIndexes));
+       
+        Debug.Log("SaveCardsShuffleState: " + chosenCardIndexesTxt);       
+               
+        PlayerPrefs.SetString("save_chosenCardIndexes", chosenCardIndexesTxt);
+
+        if (saveNow) PlayerPrefs.Save();
+    }
+
+    bool LoadCardsShuffleState()
+    {
+        if (!PlayerPrefs.HasKey("save_chosenCardIndexes"))
+            return false;
+
+        string chosenCardIndexesTxt = PlayerPrefs.GetString("save_chosenCardIndexes", string.Empty);
+        chosenCardIndexes = JsonUtility.FromJson<JsonListWrapper<int>>(chosenCardIndexesTxt).list;
+        int cardsNeeded = matchesNeeded * 2;
+        if (chosenCardIndexes.Count != cardsNeeded)
+        {
+            Debug.LogWarning("Loaded state does not contain correct length, aborting. chosenCardIndexes.Count: "
+                                + chosenCardIndexes.Count + " cardsNeeded: " + cardsNeeded);
+            return false;
+        }
+        Debug.Log("Loaded Card Shuffle State: " + chosenCardIndexesTxt);
+
+        return true;
+    }
+
+
+    public void SaveCardsMatchedState(bool saveNow = false)
+    {
+        List<bool> cardsMatched = new List<bool>();
+        for (int i = 0; i < currentCards.Count; i++)
+        {
+            cardsMatched.Add(currentCards[i].isMatched);
+        }
+
+        string cardsMatchedTxt = JsonUtility.ToJson(new JsonListWrapper<bool>(cardsMatched));
+        Debug.Log("SaveCardsMatchedState:" + cardsMatchedTxt);
+
+        PlayerPrefs.SetString("save_cardsMatched", cardsMatchedTxt);
+
+        if (saveNow) PlayerPrefs.Save();
+    }
+
+
+    bool LoadCardsMatchedState()
+    {
+        if (!PlayerPrefs.HasKey("save_cardsMatched"))
+            return false;
+
+        string cardsMatchedTxt = PlayerPrefs.GetString("save_cardsMatched", string.Empty);
+        List<bool> cardsMatched = JsonUtility.FromJson<JsonListWrapper<bool>>(cardsMatchedTxt).list;
+
+        if (cardsMatched.Count != currentCards.Count)
+        {
+            Debug.LogWarning("Loaded state does not contain correct length, aborting. cardsMatched.Count: "
+                                + cardsMatched.Count + " should be : " + currentCards.Count);
+            return false;
+        }
+
+        for (int i = 0; i < currentCards.Count; i++)
+        {
+            if (cardsMatched[i] == true)
+            {
+                currentCards[i].SetMatched(true, true);
+                totalMatchesMade++;
+            }
+        }
+        totalMatchesMade /= 2;
+        Debug.Log("Loaded Card Matched State: " + cardsMatchedTxt + " totalMatchesMade: " + totalMatchesMade);
+
+        return true;
+    }
+
+
+
+    public void RemoveSaveState()
+    {
+        PlayerPrefs.DeleteKey("save_chosenCardIndexes");
+        PlayerPrefs.DeleteKey("save_cardsMatched");
+
+        PlayerPrefs.Save();
+    }
+
+    #endregion
+
 
 }

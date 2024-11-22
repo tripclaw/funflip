@@ -50,7 +50,9 @@ public class CardVisual : MonoBehaviour
         itemImage.sprite = _parentCard.cardData.cardFaceSprite;
         backgroundImage.color = _parentCard.cardData.bgColor;
 
-        SetIsFlipped(false);
+        SetIsFlipped(_parentCard.isFlipped);
+
+
     }
 
     float targetHoverHeight = 0f;

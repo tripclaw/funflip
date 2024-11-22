@@ -41,10 +41,10 @@ public class GameManager : MonoBehaviour
 
     }
 
-
     public void OnGameWin()
     {
-        onGameWinCoroutine = StartCoroutine(OnGameWinSequence());       
+        onGameWinCoroutine = StartCoroutine(OnGameWinSequence());
+        RemoveAllSaveData();
     }
 
     IEnumerator OnGameWinSequence()
@@ -61,5 +61,10 @@ public class GameManager : MonoBehaviour
     void PlayWinSound()
     {
         AudioSource.PlayClipAtPoint(gameWinSound, transform.position);
+    }
+
+    public void RemoveAllSaveData()
+    {
+        cardManager.RemoveSaveState();
     }
 }

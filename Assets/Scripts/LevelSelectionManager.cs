@@ -36,6 +36,7 @@ public class LevelSelectionManager : MonoBehaviour
     public void ShowLevelSelectionPanel()
     {
         levelSelectionPanel.SetActive(true);
+        gameManager.RemoveAllSaveData();
         PlayerPrefs.SetInt("CurrentLevel", -1);
         PlayerPrefs.Save();
     }
