@@ -1,8 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 public class CardManager : MonoBehaviour
 {
@@ -47,36 +50,74 @@ public class CardManager : MonoBehaviour
 
         ResetCardSet();
         matchesNeeded = 0;
+        bool offByOne = false;
 
-        int cardCount = (levelDef.size.x * levelDef.size.y) / 2;
+        offByOne = (levelDef.size.x * levelDef.size.y) % 2 == 1;
+        int emptyCount = levelDef.emptyCardIndexes.Count();
+        int size = (levelDef.size.x * levelDef.size.y) - emptyCount;
+        int cardCount = size / 2;
+
+        cardCount -= (offByOne ? emptyCount - 1 : emptyCount);
+
+        List<CardData> cardDataList = new List<CardData>();
+
         for (int i = 0; i < cardCount; i++)
-        { 
+        {
             CardData cardData = GetRandomCard();
 
+            // Add a pair of each random card
             for (int x = 0; x < 2; x++)
             {
-                Card card = Instantiate(cardPrefab, layoutCards.transform).GetComponent<Card>();
-                card.Initialize(cardData);
-                currentCards.Add(card);
-                card.cardRevealedEvent.AddListener(OnCardFlipped);
-                card.cardStartFlipEvent.AddListener(OnCardStartFlip);
+                cardDataList.Add(cardData);
             }
             matchesNeeded++;
         }
+
+        // shuffle cardDataList
+        ShuffleCardDataList(cardDataList);
+
+        foreach (CardData cd in cardDataList)
+        {                
+            Card card = Instantiate(cardPrefab, layoutCards.transform).GetComponent<Card>();
+            card.Initialize(cd);
+            currentCards.Add(card);
+            card.cardRevealedEvent.AddListener(OnCardFlipped);
+            card.cardStartFlipEvent.AddListener(OnCardStartFlip);
+        }
+
         layoutCards.SetDimensions(levelDef.size.x, levelDef.size.y);
-        ShuffleCards();
-        foreach(int emptyCardIndex in levelDef.emptyCardIndexes)
+
+        // ShuffleCardsBySiblingIndex();
+
+        StartCoroutine(AddEmptyCardsLate(levelDef));      
+
+        totalMatchesMade = 0;
+    }
+
+    public void AddEmptyCards(LevelDefinition levelDef)
+    {
+        foreach (int emptyCardIndex in levelDef.emptyCardIndexes)
         {
-            Debug.Log("creating empty index");
             GameObject emptyPlaceholder = new GameObject();
             emptyPlaceholder.AddComponent<RectTransform>();
             emptyPlaceholder.name = "Empty";
             emptyPlaceholder.transform.SetParent(layoutCards.transform);
             emptyPlaceholder.transform.SetSiblingIndex(emptyCardIndex);
+            for (int i = emptyCardIndex + 1; i < transform.childCount; i++)
+            {
+                transform.GetChild(i).SetSiblingIndex(transform.GetChild(i).GetSiblingIndex() + 1);
+            }
+            // Debug.Log("creating empty index " + emptyCardIndex + " actual: " + emptyPlaceholder.transform.GetSiblingIndex());
         }
 
-        totalMatchesMade = 0;
     }
+
+    IEnumerator AddEmptyCardsLate(LevelDefinition levelDef)
+    {
+        yield return new WaitForEndOfFrame();
+        AddEmptyCards(levelDef);
+    }
+
     public void DestroyCards()
     {
         selectedCards.Clear();
@@ -93,11 +134,34 @@ public class CardManager : MonoBehaviour
         currentCards.Clear();
     }
 
-    void ShuffleCards()
+    void ShuffleCardsBySiblingIndex()
     {
+        List<int> allIndexes = new List<int>();
+        for (int i = 0; i < layoutCards.transform.childCount; i++)
+            allIndexes.Add(i);
+
         for (int i = 0; i < layoutCards.transform.childCount; i++)
         {
-            layoutCards.transform.GetChild(i).SetSiblingIndex(UnityEngine.Random.Range(0, layoutCards.transform.childCount));
+            int pickedIndex = UnityEngine.Random.Range(0, allIndexes.Count);
+            int randomSiblingIndex = allIndexes[pickedIndex];
+            allIndexes.RemoveAt(pickedIndex);
+            layoutCards.transform.GetChild(i).SetSiblingIndex(randomSiblingIndex);
+        }
+    }
+
+    void ShuffleCardDataList(List<CardData>cardDataList)
+    {
+        List<int> allIndexes = new List<int>();
+        for (int i = 0; i < cardDataList.Count; i++)
+            allIndexes.Add(i);
+
+        int count = cardDataList.Count;
+        for (var i = 0; i < count - 1; ++i)
+        {
+            int rand = UnityEngine.Random.Range(i, count);
+            CardData tempCard = cardDataList[i];
+            cardDataList[i] = cardDataList[rand];
+            cardDataList[rand] = tempCard;
         }
     }
 
