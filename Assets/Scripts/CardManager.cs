@@ -89,7 +89,11 @@ public class CardManager : MonoBehaviour
         StartCoroutine(AddEmptyCardsLate(levelDef));
 
         totalMatchesMade = 0;
-        if (loadedState) LoadCardsMatchedState();
+        if (loadedState)
+        {
+            LoadCardsMatchedState();
+            LoadComboLevelState();
+        }
     }
 
     public void AddEmptyCards(LevelDefinition levelDef)
@@ -222,7 +226,9 @@ public class CardManager : MonoBehaviour
             }
             else
             {
-                SaveCardsMatchedState(true);
+                SaveComboLevelState();
+                SaveCardsMatchedState();
+                playerScore.SaveScoreState(true);
             }
         }
         else
@@ -232,6 +238,7 @@ public class CardManager : MonoBehaviour
             card2.SetFlipped(false);
             comboLevel = 0;
             playerScore.SetComboLevel(0);
+            SaveComboLevelState(true);
             PlayMismatchSound();
         }
         // Debug.Log("totalMatchesMade: " + totalMatchesMade + " matchesNeeded: " + matchesNeeded);
@@ -341,12 +348,24 @@ public class CardManager : MonoBehaviour
         return true;
     }
 
+    void SaveComboLevelState(bool saveNow = false)
+    {
+        PlayerPrefs.SetInt("save_comboLevel", comboLevel);
+        //Debug.Log("save combo level:" + comboLevel);
+        if (saveNow) PlayerPrefs.Save();
+    }
 
+    void LoadComboLevelState()
+    {
+        comboLevel = PlayerPrefs.GetInt("save_comboLevel", 0);
+        // Debug.Log("load combo level:" + comboLevel);
+    }
 
     public void RemoveSaveState()
     {
         PlayerPrefs.DeleteKey("save_chosenCardIndexes");
         PlayerPrefs.DeleteKey("save_cardsMatched");
+        PlayerPrefs.DeleteKey("save_comboLevel");
 
         PlayerPrefs.Save();
     }

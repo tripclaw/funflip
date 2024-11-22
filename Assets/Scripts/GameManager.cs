@@ -29,8 +29,9 @@ public class GameManager : MonoBehaviour
         if (onGameWinCoroutine != null)
             StopCoroutine(onGameWinCoroutine);
 
-        // Init Game Config / (To Do) Restore Save Game 
-        playerScore.Reset();
+        // Init Game Config 
+
+        playerScore.LoadScoreState();
 
         // Init UI
         levelComplete.SetActive(false);
@@ -66,5 +67,6 @@ public class GameManager : MonoBehaviour
     public void RemoveAllSaveData()
     {
         cardManager.RemoveSaveState();
+        playerScore.RemoveSaveState();
     }
 }
